@@ -1,4 +1,6 @@
 require("dotenv").config();
+var Spotify = require('node-spotify-api');
+
 
 //-------------------VARIABLES----------------------------------------------------
 
@@ -12,32 +14,31 @@ var commandParam = process.argv[3];
 var defaultMovie = "Robocop";
 var defaultSong = "Smooth Criminal";
 
-var tmdbKey = keys.tmdbKey;
+var tmdbKey = 'e6170ea7'
 
 
-// SPOTIFY KEY VARIABLES
-var spotifykeys = keys.spotifykeys;
+// // SPOTIFY KEY VARIABLES
+// var spotifykeys = keys.spotifykeys;
 
 //var spotify = new Spotify(keys.spotify);
-var Spotify = new Spotify({
-	id: '541acfa47074408cb4a1c636cf0b5ead',
-	secret: '2d61c12521254f6589701d9aff7653f9',
-});
+
+
 
 
 
 //-----------------------FUNCTIONS-----------------------------------------------
 
-//This function processes the input commands
+//This function processes the input commands, allows the user to swtich through commandsa & break without running them all
 function processCommands(command, commandParam) {
 
 	//console.log(commandParam);
 
 	switch (command) {
 
-		// case 'concert-this':
-		// 	concertThis();
-		// 	break;
+		case 'concert-this':
+			concertThis();
+			break;
+
 		case 'spotify-this-song':
 			//If user has not specified a song , use default
 			if (commandParam === undefined) {
@@ -45,6 +46,7 @@ function processCommands(command, commandParam) {
 			}
 			spotifyThis(commandParam);
 			break;
+
 		case 'movie-this':
 			//If user has not specified a movie Name , use default
 			if (commandParam === undefined) {
@@ -52,6 +54,7 @@ function processCommands(command, commandParam) {
 			}
 			movieThis(commandParam);
 			break;
+
 		case 'do-what-it-says':
 			doWhatItSays();
 			break;
@@ -64,45 +67,73 @@ function processCommands(command, commandParam) {
 
 // Make it so liri.js can take in one of the following commands: concert-this
 // function concertThis(){
-
+// 	if 
 // }
+
+// var Events = new BandsInTownEvents();
+
+//set options for instance
+//app_id and artists are required
+// Events.setParams({
+// "app_id":"myappname", //can be anything
+// "artists":[ //accepts string for single artist or an array of artist names
+// 	"Wilco",
+// 	"Yeah Yeah Yeahs"
+// ]
+// });
+
+//get your events with success and error callbacks
+// Events.getEvents(function( events ){
+//   for(var i = 0; i < events.length; i++){
+//     console.log( events[i].venue.city + ", " + events[i].venue.region );
+//   }
+// },function( errors ){
+//   console.log(errors);
+// });
 // node liri.js concert-this <artist/band name here>
 
 
 function spotifyThis(song) {
 
-	//If user has not specified a song , default to "Radioactive" imagine dragons
+	//If user has not specified a song , default to "Thriller" imagine dragons
 	if (song === "") {
-		song = "Smooth Criminal";
+		song = "Thriller";
 	}
+	//this comes from NPM Site
+	var Spotify = require('node-spotify-api');
+
+	var spotify = new Spotify({
+		id: '541acfa47074408cb4a1c636cf0b5ead',
+		secret: '2d61c12521254f6589701d9aff7653f9',
+	});
 
 	spotify.search({
 		type: 'track',
 		query: song
 	}, function (err, data) {
 		if (err) {
-			console.log('Error occurred: ' + err);
-			return;
+			return console.log('Error occurred: ' + err);
 		}
 
-		var song = data.tracks.items[0];
-		console.log("------Artists-----");
-		for (i = 0; i < song.artists.length; i++) {
-			console.log(song.artists[i].name);
-		}
-
-		console.log("------Song Name-----");
-		console.log(song.name);
-
-		console.log("-------Preview Link-----");
-		console.log(song.preview_url);
-
-		console.log("-------Album-----");
-		console.log(song.album.name);
-
+		console.log(data);
 	});
 
-}
+		// var data = data.tracks.items[0];
+		// console.log("------Artists-----");
+		// for (i = 0; i < song.artists.length; i++) {
+		// 	console.log(song.artists[i].name);
+		// }
+
+		// console.log("------Song Name-----");
+		// console.log(song.name);
+
+		// console.log("-------Preview Link-----");
+		// console.log(song.preview_url);
+
+		// console.log("-------Album-----");
+		// console.log(song.album.name);
+
+	}
 
 function movieThis(movieName) {
 
@@ -160,18 +191,18 @@ function movieThis(movieName) {
 	});
 }
 
-function doWhatItSays() {
-	fs.readFile('random.txt', 'utf8', function (err, data) {
+// function doWhatItSays() {
+// 	fs.readFile('random.txt', 'utf8', function (err, data) {
 
-		if (err) {
-			return console.log(err);
-		}
+// 		if (err) {
+// 			return console.log(err);
+// 		}
 
-		var dataArr = data.split(',');
+// 		var dataArr = data.split(',');
 
-		processCommands(dataArr[0], dataArr[1]);
-	});
-}
+// 		processCommands(dataArr[0], dataArr[1]);
+// 	});
+// }
 
 
 
