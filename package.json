@@ -5,6 +5,7 @@
   "main": "apikeys.js",
   "dependencies": {
     "axios": "^0.18.0",
+    "bandsintown-events": "^1.0.4",
     "cerebro-scripts": "0.0.25",
     "cerebro-spotify": "^0.1.0",
     "dotenv": "^6.1.0",

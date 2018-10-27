@@ -36,7 +36,11 @@ function processCommands(command, commandParam) {
 	switch (command) {
 
 		case 'concert-this':
-			concertThis();
+			// If user has not specified an event, use default
+			if (commandParam === underfined) {
+				commandParam = defaultEvent;
+			}
+			concertThis(commandParam);
 			break;
 
 		case 'spotify-this-song':
@@ -61,151 +65,168 @@ function processCommands(command, commandParam) {
 		default:
 			console.log("Invalid command. Please type any of the following commnds: concert-this spotify-this-song movie-this or do-what-it-says");
 	}
-
-
 }
 
 // Make it so liri.js can take in one of the following commands: concert-this
-// function concertThis(){
-// 	if 
-// }
-
-// var Events = new BandsInTownEvents();
-
-//set options for instance
-//app_id and artists are required
-// Events.setParams({
-// "app_id":"myappname", //can be anything
-// "artists":[ //accepts string for single artist or an array of artist names
-// 	"Wilco",
-// 	"Yeah Yeah Yeahs"
-// ]
-// });
-
-//get your events with success and error callbacks
-// Events.getEvents(function( events ){
-//   for(var i = 0; i < events.length; i++){
-//     console.log( events[i].venue.city + ", " + events[i].venue.region );
-//   }
-// },function( errors ){
-//   console.log(errors);
-// });
-// node liri.js concert-this <artist/band name here>
-
-
-function spotifyThis(song) {
-
-	//If user has not specified a song , default to "Thriller" imagine dragons
-	if (song === "") {
-		song = "Thriller";
+function concertThis() {
+	if (Event === "") {
+		Events = "Coheed and Cambria";
 	}
-	//this comes from NPM Site
-	var Spotify = require('node-spotify-api');
 
-	var spotify = new Spotify({
-		id: '541acfa47074408cb4a1c636cf0b5ead',
-		secret: '2d61c12521254f6589701d9aff7653f9',
+	vvar Events = new BandsInTownEvents();
+
+	//set options for instance
+	//app_id and artists are required
+	Events.setParams({
+		"app_id": "myappname", //can be anything
+		"artists": [ //accepts string for single artist or an array of artist names
+			"Wilco",
+			"Yeah Yeah Yeahs"
+		]
 	});
 
-	spotify.search({
-		type: 'track',
-		query: song
-	}, function (err, data) {
-		if (err) {
-			return console.log('Error occurred: ' + err);
+	//get your events with success and error callbacks
+	Events.getEvents(function (events) {
+		for (var i = 0; i < events.length; i++) {
+			console.log(events[i].venue.city + ", " + events[i].venue.region);
 		}
-
-		console.log(data);
+	}, function (errors) {
+		console.log(errors);
 	});
+	var Events = data.events[0];
+	console.log("------Name of the venue-----");
+	console.log();
+
+	console.log("------Venue location-----");
+	console.log();
+
+	console.log("------Date of the Event -----");
+	console.log(); 
+
+
+
+			// //setParams - set a group of parameters as an object
+			// //these will merge with the currently set params
+			// bitGet.setParams(obj);
+
+			// //setParam - set a new single parameter as key, value pair
+			// Events.setParam(key, value);
+
+			// //getParams - get the currently set parameters
+			// var params = Events.getParams();
+			// console.log(params);
+
+			// //unsetParam - unset a parameter that you previously set by key
+			// Events.unsetParam(key);
+
+	// node liri.js concert-this <artist/band name here>
+
+	
+
+
+	function spotifyThis(song) {
+
+		//If user has not specified a song , default to "Thriller" 
+		if (song === "") {
+			song = "Thriller";
+		}
+		//this comes from NPM Site
+		var spotify = new Spotify({
+			id: '541acfa47074408cb4a1c636cf0b5ead',
+			secret: '2d61c12521254f6589701d9aff7653f9',
+		});
+
+		spotify.search({
+			type: 'track',
+			query: song
+		}, function (err, data) {
+			if (err) {
+				return console.log('Error occurred: ' + err);
+			}
+
+			console.log(data);
+		});
 
 		// var data = data.tracks.items[0];
-		// console.log("------Artists-----");
-		// for (i = 0; i < song.artists.length; i++) {
-		// 	console.log(song.artists[i].name);
-		// }
+		console.log("------Artists-----");
+		console.log(data.tracks.artists);
 
-		// console.log("------Song Name-----");
-		// console.log(song.name);
 
-		// console.log("-------Preview Link-----");
-		// console.log(song.preview_url);
+		console.log("------Song Name-----");
+		console.log(song);
 
-		// console.log("-------Album-----");
-		// console.log(song.album.name);
+		console.log("-------Preview Link-----");
+		console.log(data.tracks.External_URL);
 
+		console.log("-------Album-----");
+		console.log(data.tracks.album);
 	}
 
-function movieThis(movieName) {
+	function movieThis(movieName) {
 
-	console.log(movieName);
+		console.log(movieName);
 
-	request("https://api.themoviedb.org/3/search/movie?api_key=" + tmdbKey + "&query=" + movieName, function (error, response, body) {
+		request("http://www.omdbapi.com/?apikey=" + tmdbKey + "&t=" + movieName, function (error, response, body) {
 
-		// If there were no errors and the response code was 200 (i.e. the request was successful)...
-		if (!error && response.statusCode === 200) {
+			// If there were no errors and the response code was 200 (i.e. the request was successful)...
+			if (!error && response.statusCode === 200) {
 
-			//console.log(JSON.parse(body));
+				//console.log(JSON.parse(body));
 
-			//Get the Movie ID
-			var movieID = JSON.parse(body).results[0].id;
-			//console.log(movieID);
+				//Get the Movie ID
+				//var movieID = JSON.parse(body).results[0].id;
+				//console.log(movieID);
 
-			//Create new query using the movie ID
-			var queryURL = "https://api.themoviedb.org/3/movie/" + movieID + "?api_key=" + tmdbKey + "&append_to_response=credits,releases";
+				//Create new query using the movie ID
+				var queryURL = "http://www.omdbapi.com/?apikey=" + tmdbKey + "&t=" + movieName + "&append_to_response=credits,releases";
 
-			request(queryURL, function (error, response, body) {
-				var movieObj = JSON.parse(body);
+				request(queryURL, function (error, response, body) {
+					var movieObj = JSON.parse(body);
 
-				console.log("--------Title-----------");
-				console.log(movieObj.original_title);
+					console.log("--------Title of the movie-----------");
+					console.log(movieObj.Title);
 
-				console.log("--------Year -----------");
-				console.log(movieObj.release_date.substring(0, 4));
+					console.log("--------Year the movie came out -----------");
+					console.log(movieObj.Year);
 
-				console.log("--------Rating-----------");
-				console.log(movieObj.releases.countries[0].certification);
+					console.log("--------Rating-----------");
+					console.log(movieObj.Ratings);
 
-				console.log("--------Country Produced-----------");
-				for (i = 0, j = movieObj.production_countries.length; i < j; i++) {
-					console.log(movieObj.production_countries[i].name);
-				}
-				console.log("--------Languages-----------");
-				for (i = 0, j = movieObj.spoken_languages.length; i < j; i++) {
-					console.log(movieObj.spoken_languages[i].name);
-				}
-				console.log("--------Plot----------------");
-				console.log(movieObj.overview);
+					console.log("--------Genre-----------");
+					console.log(movieObj.Genre);
 
-				console.log("--------Actors-----------");
-				for (i = 0, j = movieObj.credits.cast.length; i < j; i++) {
-					console.log(movieObj.credits.cast[i].name);
-				}
+					console.log("--------Languages-----------");
+					console.log(movieObj.Language);
 
-			});
+					console.log("--------Plot----------------");
+					console.log(movieObj.Plot);
 
+					console.log("--------Actors-----------");
+					console.log(movieObj.Actors);
 
-		} else {
-			console.log(error);
-		}
+				})
+			}
+			// 		else {
+			// 	console.log(error);
+			// }
+		});
+	}
 
-	});
-}
+	function doWhatItSays() {
+		fs.readFile('random.txt', 'utf8', function (err, data) {
 
-// function doWhatItSays() {
-// 	fs.readFile('random.txt', 'utf8', function (err, data) {
+			if (err) {
+				return console.log(err);
+			}
 
-// 		if (err) {
-// 			return console.log(err);
-// 		}
+			var dataArr = data.split(',');
 
-// 		var dataArr = data.split(',');
-
-// 		processCommands(dataArr[0], dataArr[1]);
-// 	});
-// }
+			processCommands(dataArr[0], dataArr[1]);
+		});
+	}
 
 
 
-//-------------------------MAIN PROCESS-------------------------------------------
+	//-------------------------MAIN PROCESS-------------------------------------------
 
-processCommands(inputCommand, commandParam);
+	processCommands(inputCommand, commandParam);
